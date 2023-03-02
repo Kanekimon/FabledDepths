@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,10 +11,15 @@ public class CustomRoomGeneratorEditor : Editor
         RoomGenerator gen = (RoomGenerator)target;
 
 
-        if(GUILayout.Button("Generate Room"))
+        if (GUILayout.Button("Generate Room"))
         {
             gen.GenerateRoom();
 
+        }
+
+        if(GUILayout.Button("Load Room"))
+        {
+            RoomGenerationManager.Instance.LoadRoomFromJson("");
         }
     }
 }
