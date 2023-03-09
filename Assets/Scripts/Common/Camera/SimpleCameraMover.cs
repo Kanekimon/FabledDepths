@@ -28,19 +28,19 @@ public class SimpleCameraMover : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
-            Camera.main.transform.Translate(Vector3.up * moveSpeed);
+            cam.transform.Translate(Vector3.up * moveSpeed);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            Camera.main.transform.Translate(Vector3.down * moveSpeed);
+            cam.transform.Translate(Vector3.down * moveSpeed);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            Camera.main.transform.Translate(Vector3.left * moveSpeed);
+            cam.transform.Translate(Vector3.left * moveSpeed);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            Camera.main.transform.Translate(Vector3.right * moveSpeed);
+            cam.transform.Translate(Vector3.right * moveSpeed);
         }
 
         targetZoom -= Input.mouseScrollDelta.y * sensitivity;

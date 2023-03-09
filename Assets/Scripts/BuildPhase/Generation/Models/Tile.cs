@@ -18,6 +18,7 @@ public class Tile
     private float _y;
     private GameObject _tileObject;
     private TileType _tileType;
+    private DoorPlacement _doorPlacement;
 
     public float X
     {
@@ -42,21 +43,40 @@ public class Tile
         set { _tileType = value; }
     }
 
+    public DoorPlacement Placement
+    {
+        get { return _doorPlacement; }
+        set { _doorPlacement = value; }
+    }
 
-    public Tile(int x, int y, Transform parent, TileType tileType = TileType.normal)
+
+    public Tile(int x, int y, Transform parent, TileType tileType = TileType.normal, DoorPlacement doorPlacement = DoorPlacement.none)
     {
         _x = x;
         _y = y;
         _tileType = tileType;
-    
-        if(TileType == TileType.normal)
+
+        if (TileType == TileType.normal)
             _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Tile"));
-        else if(TileType == TileType.edge)
+        else if (TileType == TileType.edge)
             _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Wall"));
+        else if (TileType == TileType.door)
+        {
+            _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Door"));
+            _doorPlacement = doorPlacement;
+            if(_doorPlacement.HasFlag(DoorPlacement.west | DoorPlacement.east)) RotateDoor();
+        }
 
         _tileObject.transform.parent = parent;
         _tileObject.transform.localPosition = new Vector3(_x, _y, 0);
-        _tileObject.name = $"Tile [{_x},{_y}]";
+        _tileObject.name = $"Tile({tileType}) [{_x},{_y}]";
+    }
+
+
+    void RotateDoor()
+    {
+        float zRotation = 90.0f;
+        _tileObject.transform.eulerAngles = new Vector3(_tileObject.transform.eulerAngles.x, _tileObject.transform.eulerAngles.y, zRotation);
     }
 
 }

@@ -11,15 +11,11 @@ public class CustomRoomGeneratorEditor : Editor
         base.OnInspectorGUI();
 
         RoomGenerator gen = (RoomGenerator)target;
-<<<<<<< Updated upstream
-
 
         if(GUILayout.Button("Generate Room"))
         {
-            gen.GenerateRoom();
+            //gen.GenerateRoom();
 
         }
-=======
->>>>>>> Stashed changes
     }
 }

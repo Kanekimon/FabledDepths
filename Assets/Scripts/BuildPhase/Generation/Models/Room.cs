@@ -5,28 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-<<<<<<< Updated upstream:Assets/Scripts/Building/Generation/Models/Room.cs
-public class Room
-{
-    public Guid Id { get; private set; }
-    private List<Tile> _tiles;
-    private GameObject _roomObject;
-    private int _xIndex;
-    private int _yIndex;
-    
-    public (int X, int Y) Index
-    {
-        get { return (_xIndex, _yIndex); }
-        set { _xIndex = value.X; _yIndex = value.Y; }
-    }
 
-
-    public GameObject RoomObject
-    {
-        get { return _roomObject; }
-        private set { _roomObject = value; }
-    }
-=======
 [Serializable]
 public class BoundingBox
 {
@@ -94,29 +73,26 @@ public class Room : BaseRoom
 
     public List<Tile> Tiles { get { return _tiles; } }
 
->>>>>>> Stashed changes:Assets/Scripts/BuildPhase/Generation/Models/Room.cs
 
     public Tile this[int x, int y]
     {
         get { return _tiles.FirstOrDefault(t => t.X == x && t.Y == y); }
         set
         {
-            if(_tiles.Any(t => t.X == x && t.Y == y))
+            if (_tiles.Any(t => t.X == x && t.Y == y))
             {
-                this[x, y] = value;
+                Tile t = _tiles.Where(t => t.X == x && t.Y == y).First();
+                _tiles.Remove(t);
+                Destroy(t.TileObject);
             }
-            else
-            {
-                _tiles.Add(value);
-            }
+            _tiles.Add(value);
         }
     }
-<<<<<<< Updated upstream:Assets/Scripts/Building/Generation/Models/Room.cs
 
-    public Room((int XIndex, int YIndex) index)
-=======
+
+
+
     public void Init((int X, int Y) index, int width, int height)
->>>>>>> Stashed changes:Assets/Scripts/BuildPhase/Generation/Models/Room.cs
     {
         _tiles = new List<Tile>();
         Id = new Guid();
@@ -125,8 +101,7 @@ public class Room : BaseRoom
         RoomObject = this.gameObject;
         RoomObject.name = $"Room [{Index.X}|{Index.Y}]";
         RoomObject.tag = "Room";
-<<<<<<< Updated upstream:Assets/Scripts/Building/Generation/Models/Room.cs
-=======
+
         RoomObject.transform.position = new Vector3((index.X * width), (index.Y * height), 0);
 
         BoundingBox = new BoundingBox(RoomObject.transform.position, width, height);
@@ -141,7 +116,7 @@ public class Room : BaseRoom
             collider.offset = new Vector2(width / 2, height / 2);
         }
 
->>>>>>> Stashed changes:Assets/Scripts/BuildPhase/Generation/Models/Room.cs
+
     }
 
     public void ChangeIndex((int X, int Y) Index)
@@ -154,7 +129,7 @@ public class Room : BaseRoom
 
     public void Destroy()
     {
-        foreach(Tile t in _tiles)
+        foreach (Tile t in _tiles)
         {
             GameObject.DestroyImmediate(t.TileObject);
         }

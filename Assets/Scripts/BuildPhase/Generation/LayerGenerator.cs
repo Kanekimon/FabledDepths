@@ -12,18 +12,15 @@ public class LayerGenerator : IGenerator
 
     public Room GenerateRoom((int X,int Y) Index, RoomConfiguration rC, int width, int height, GameObject container = null)
     {
-<<<<<<< Updated upstream:Assets/Scripts/Building/Generation/LayerGenerator.cs
-        Room r = new Room((0, 0));
-        CreateBaseTileMap(ref r, rC);
-=======
         GameObject room = GameObject.Instantiate(Resources.Load("Room/BaseRoom")) as GameObject;
         if(container != null)
             room.transform.parent = container.transform;
 
-        Room r = room.GetComponent<Room>();  //Room((0, 0), rC.Width, rC.Height);
-        r.Init(Index, width,height);
-        CreateBaseTileMap(ref r);
->>>>>>> Stashed changes:Assets/Scripts/BuildPhase/Generation/LayerGenerator.cs
+        Room r = room.GetComponent<Room>();
+
+        r.Init(Index, width, height);
+        CreateBaseTileMap(ref r, rC);
+        CreateDoors(ref r, rC);
         CreateObstacles(ref r, rC);
         //CreateMonsterSpawns();
         return r;
@@ -32,13 +29,13 @@ public class LayerGenerator : IGenerator
 
     void CreateBaseTileMap(ref Room r, RoomConfiguration rC)
     {
-        for (int x = 0; x < rC.BoundingBox.Width; x++)
+        for (int x = 0; x < r.BoundingBox.Width; x++)
         {
-            for (int y = 0; y < rC.BoundingBox.Height; y++)
+            for (int y = 0; y < r.BoundingBox.Height; y++)
             {
                 if (r[x, y] == null)
                 {
-                    r[x, y] = GenerateTile(x, y, rC.BoundingBox, r);
+                    r[x, y] = GenerateTile(x, y, r.BoundingBox, r);
                 }
             }
         }
@@ -50,7 +47,7 @@ public class LayerGenerator : IGenerator
         List<Vector3> closed = new List<Vector3>();
         for(int i = 0; i < rC.ObastacleSeedPoints; i++)
         {
-            Vector3 seedPoint = rC.BoundingBox.GetPoint();
+            Vector3 seedPoint = r.BoundingBox.GetPoint();
             if (!spawnPoints.Contains(seedPoint))
                 spawnPoints.Push(seedPoint);
         }
@@ -66,7 +63,7 @@ public class LayerGenerator : IGenerator
             for(int i = 0; i < XMask.Length; i++)
             {
                 Vector3 newPoint = new Vector3(spawnPoint.x + XMask[i], spawnPoint.y + YMask[i], 0);
-                if (!spawnPoints.Contains(newPoint) && !closed.Contains(newPoint) && rC.BoundingBox.IsPointValid(newPoint) && UnityEngine.Random.Range(0f, 1f) < prob)
+                if (!spawnPoints.Contains(newPoint) && !closed.Contains(newPoint) && r.BoundingBox.IsPointValid(newPoint) && UnityEngine.Random.Range(0f, 1f) < prob)
                 {
                     prob -= 0.01f;
                     spawnPoints.Push(newPoint);
@@ -88,8 +85,7 @@ public class LayerGenerator : IGenerator
     }
 
 
-<<<<<<< Updated upstream:Assets/Scripts/Building/Generation/LayerGenerator.cs
-=======
+
     void CreateDoors(ref Room r, RoomConfiguration rC)
     {
         (Vector2 XminYmin, Vector2 XmaxYmin, Vector2 XminYmax, Vector2 XmaxYmax) c = r.BoundingBox.LocalCenter;
@@ -119,8 +115,6 @@ public class LayerGenerator : IGenerator
 
     }
 
-
->>>>>>> Stashed changes:Assets/Scripts/BuildPhase/Generation/LayerGenerator.cs
 
     Tile GenerateTile(int x, int y, BoundingBox bb, Room r)
     {
