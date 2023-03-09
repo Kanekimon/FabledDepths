@@ -17,7 +17,7 @@ public class AdjacendRoom
 
 
 
-public abstract class BaseRoom : MonoBehaviour
+public abstract class BaseRoom 
 {
     private (int X, int Y) _index;
 

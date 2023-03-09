@@ -32,7 +32,7 @@ public class DragDropManager : Singleton<DragDropManager>
     {
         if(CurrentlyOver != null)
         {
-            BuildManager.Instance.RegisterRoom(CurrentlyOver.GetComponent<PlaceholderAddRoom>(), CurrentlyDragging.GetComponent<Room>());
+            BuildManager.Instance.RegisterRoom(CurrentlyOver.GetComponent<PlaceholderRoom>(), CurrentlyDragging.GetComponent<Room>());
         }
         else
         {

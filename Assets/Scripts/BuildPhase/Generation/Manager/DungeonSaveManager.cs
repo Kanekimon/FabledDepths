@@ -56,7 +56,7 @@ public class DungeonSaveManager : Singleton<DungeonSaveManager>
 
         foreach (KeyValuePair<(int xIndex, int yIndex), BaseRoom> room in roomMap)
         {
-            if (room.Value is PlaceholderAddRoom)
+            if (room.Value is PlaceholderRoom)
                 continue;
 
             rooms.Add(RoomSaveData.SaveRoom((Room)room.Value));

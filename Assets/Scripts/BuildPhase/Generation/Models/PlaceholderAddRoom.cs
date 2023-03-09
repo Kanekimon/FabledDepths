@@ -5,23 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlaceholderAddRoom : BaseRoom
+public class PlaceholderRoom : BaseRoom
 {
 
-    Sprite original;
-    Sprite current;
-
-    private void Awake()
-    {
-        current = original = GetComponent<SpriteRenderer>().sprite;
-        RoomObject = this.gameObject;
-    }
-
-
-    private void OnMouseDown()
-    {
-        BuildManager.Instance.RegisterRoom(this);
-    }
 
 }
 

@@ -95,16 +95,6 @@ public class BuildManager : Singleton<BuildManager>
         {
             LinkRooms(r, (r.Index.X + nDiscoveryX[3], r.Index.Y + nDiscoveryY[3]));
         }
-        //for(int i = 0; i < nDiscoveryX.Length; i++)
-        //{
-        //    (int X, int Y) Index = (r.Index.X + nDiscoveryX[i], r.Index.Y + nDiscoveryY[i]);
-        //    if(!r.Adjacend.Any(x => x.Index == Index))
-        //    {
-        //        PlaceholderAddRoom plh = RegisterPlaceholder(Index);
-        //        r.Adjacend.Add(new AdjacendRoom() { Index = Index, room = plh });
-        //        plh.Adjacend.Add(new AdjacendRoom() { Index = r.Index, room = r });
-        //    }
-        //}
     }
 
     public void LinkRooms(BaseRoom r, (int X, int Y)Index)
@@ -145,7 +135,7 @@ public class BuildManager : Singleton<BuildManager>
         {
             if (child.name.Contains("Placeholder"))
             {
-                RoomMap.Remove(child.GetComponent<PlaceholderAddRoom>().Index);
+                RoomMap.Remove(child.GetComponent<PlaceholderRoom>().Index);
                 Destroy(child.gameObject);
                
             }
@@ -183,10 +173,10 @@ public class BuildManager : Singleton<BuildManager>
     /// <returns>The registered room</returns>
     public Room RegisterRoom(Room r, bool linkRooms = true)
     {
-        r.transform.parent = DungeonContainer.transform;
+        r.RoomObject.transform.parent = DungeonContainer.transform;
         RoomMap[r.Index] = r;
 
-        if(linkRooms)
+        if (linkRooms)
             CheckAdjacentRooms(r);
         return r;
     }
@@ -210,8 +200,9 @@ public class BuildManager : Singleton<BuildManager>
     /// Creates and registeres a new room and replaces the given Placeholder for it
     /// </summary>
     /// <param name="plh">Placeholder that was interacted with</param>
-    public void RegisterRoom(PlaceholderAddRoom plh) 
+    public void RegisterRoom(PlaceholderClickHandler pch) 
     {
+        PlaceholderRoom plh = (PlaceholderRoom) RoomMap.Values.Where(x => x.RoomObject == pch.gameObject).First();
         Room r = CreateRoom(plh.Index);
         RoomMap[plh.Index] = r;
         plh.CopyRoomRefs(r);
@@ -225,18 +216,37 @@ public class BuildManager : Singleton<BuildManager>
     /// Creates and registeres a new room and replaces the given Placeholder for it
     /// </summary>
     /// <param name="plh">Placeholder that was interacted with</param>
-    public void RegisterRoom(PlaceholderAddRoom plh, Room r)
+    public void RegisterRoom(PlaceholderRoom plh, Room r)
     { 
         RoomMap.Remove(r.Index);
         r.ChangeIndex(plh.Index);
 
-        Vector3 plhPos = plh.transform.position;
-        r.transform.position = new Vector3((Settings.RoomWidth * plh.Index.X) - (Settings.RoomWidth / 2), (Settings.RoomHeight * plh.Index.Y) - (Settings.RoomHeight/2), 0);  //CurrentlyOver.transform.position - new Vector3(BuildManager.Instance.Settings.RoomWidth / 2, BuildManager.Instance.Settings.RoomHeight / 2, 0);
+        Vector3 plhPos = plh.RoomObject.transform.position;
+        r.RoomObject.transform.position = new Vector3((Settings.RoomWidth * plh.Index.X) - (Settings.RoomWidth / 2), (Settings.RoomHeight * plh.Index.Y) - (Settings.RoomHeight/2), 0);  //CurrentlyOver.transform.position - new Vector3(BuildManager.Instance.Settings.RoomWidth / 2, BuildManager.Instance.Settings.RoomHeight / 2, 0);
 
         RoomMap[plh.Index] = r;
-        DestroyImmediate(plh.gameObject);
+        DestroyImmediate(plh.RoomObject);
         RegeneratePlaceholder();
     }
+
+
+    /// <summary>
+    /// Creates and registeres a new room and replaces the given Placeholder for it
+    /// </summary>
+    /// <param name="plh">Placeholder that was interacted with</param>
+    public void RegisterRoom(PlaceholderRoom plh, RoomSaveData rsd)
+    {
+        Room r = RoomSaveData.LoadRoom(rsd);
+        r.ChangeIndex(plh.Index);
+
+        Vector3 plhPos = plh.RoomObject.transform.position;
+        r.RoomObject.transform.position = new Vector3((Settings.RoomWidth * plh.Index.X) - (Settings.RoomWidth / 2), (Settings.RoomHeight * plh.Index.Y) - (Settings.RoomHeight / 2), 0);  //CurrentlyOver.transform.position - new Vector3(BuildManager.Instance.Settings.RoomWidth / 2, BuildManager.Instance.Settings.RoomHeight / 2, 0);
+
+        RoomMap[plh.Index] = r;
+        DestroyImmediate(plh.RoomObject);
+        RegeneratePlaceholder();
+    }
+
 
 
     /// <summary>
@@ -244,9 +254,9 @@ public class BuildManager : Singleton<BuildManager>
     /// </summary>
     /// <param name="Index">Position inside map</param>
     /// <returns>The created and registered placeholder</returns>
-    public PlaceholderAddRoom RegisterPlaceholder ((int x, int y) Index)
+    public PlaceholderRoom RegisterPlaceholder ((int x, int y) Index)
     {
-        PlaceholderAddRoom plRoom = RoomGenerationManager.Instance.GeneratePlaceholder(Index, Settings.RoomWidth, Settings.RoomHeight, DungeonContainer);
+        PlaceholderRoom plRoom = RoomGenerationManager.Instance.GeneratePlaceholder(Index, Settings.RoomWidth, Settings.RoomHeight, DungeonContainer);
 
         RoomMap[Index] = plRoom;
         return plRoom;

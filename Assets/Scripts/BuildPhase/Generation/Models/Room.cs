@@ -83,7 +83,7 @@ public class Room : BaseRoom
             {
                 Tile t = _tiles.Where(t => t.X == x && t.Y == y).First();
                 _tiles.Remove(t);
-                Destroy(t.TileObject);
+                GameObject.Destroy(t.TileObject);
             }
             _tiles.Add(value);
         }
@@ -98,7 +98,7 @@ public class Room : BaseRoom
         Id = new Guid();
         Index = index;
 
-        RoomObject = this.gameObject;
+        RoomObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Baseroom"));
         RoomObject.name = $"Room [{Index.X}|{Index.Y}]";
         RoomObject.tag = "Room";
 
@@ -107,7 +107,7 @@ public class Room : BaseRoom
         BoundingBox = new BoundingBox(RoomObject.transform.position, width, height);
         if (Index == (0, 0))
         {
-            Destroy(RoomObject.GetComponent<BoxCollider2D>());
+            GameObject.Destroy(RoomObject.GetComponent<BoxCollider2D>());
         }
         else
         {

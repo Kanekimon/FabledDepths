@@ -24,7 +24,7 @@ public class RoomGenerationManager : Singleton<RoomGenerationManager>
         else
             r = _generator.GenerateRoom(Index, new RoomConfiguration(Configuration), width, height, container);
 
-        r.transform.position -= new Vector3(width / 2, height / 2, 0);
+        r.RoomObject.transform.position -= new Vector3(width / 2, height / 2, 0);
         return r;
     }
 
@@ -37,20 +37,24 @@ public class RoomGenerationManager : Singleton<RoomGenerationManager>
         return r;
     }
 
-    public PlaceholderAddRoom GeneratePlaceholder((int X, int Y) Index, int width, int height, GameObject container)
+    public PlaceholderRoom GeneratePlaceholder((int X, int Y) Index, int width, int height, GameObject container)
     {
         if (_generator == null)
             _generator = new LayerGenerator();
 
+        PlaceholderRoom plhR = new PlaceholderRoom();
+
         GameObject plRoom = GameObject.Instantiate(Resources.Load<GameObject>("Room/PlaceholderRoom"));
         plRoom.transform.parent = container.transform;
 
-        plRoom.GetComponent<PlaceholderAddRoom>().Index = Index;
+        plhR.Index = Index;
         plRoom.name = $"Placeholder [{Index.X}|{Index.Y}]";
         plRoom.transform.localScale = new Vector3(width, height, 0);
         plRoom.transform.position = new Vector3((Index.X * width) - GlobalVariables.HaltUnit, (Index.Y * height) - GlobalVariables.HaltUnit, 0);
 
-        return plRoom.GetComponent<PlaceholderAddRoom>();
+        plhR.RoomObject = plRoom;
+
+        return plhR;
     }
 
 

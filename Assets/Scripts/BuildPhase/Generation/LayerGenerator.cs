@@ -12,13 +12,14 @@ public class LayerGenerator : IGenerator
 
     public Room GenerateRoom((int X,int Y) Index, RoomConfiguration rC, int width, int height, GameObject container = null)
     {
-        GameObject room = GameObject.Instantiate(Resources.Load("Room/BaseRoom")) as GameObject;
-        if(container != null)
-            room.transform.parent = container.transform;
 
-        Room r = room.GetComponent<Room>();
-
+        Room r = new Room();
         r.Init(Index, width, height);
+
+
+        if (container != null)
+            r.RoomObject.transform.parent = container.transform;
+
         CreateBaseTileMap(ref r, rC);
         CreateDoors(ref r, rC);
         CreateObstacles(ref r, rC);
