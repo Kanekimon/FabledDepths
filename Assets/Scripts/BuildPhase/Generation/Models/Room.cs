@@ -92,31 +92,34 @@ public class Room : BaseRoom
 
 
 
-    public void Init((int X, int Y) index, int width, int height)
+    public void Init((int X, int Y) index, int width, int height, bool generateObject = true)
     {
         _tiles = new List<Tile>();
         Id = new Guid();
         Index = index;
 
-        RoomObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Baseroom"));
-        RoomObject.name = $"Room [{Index.X}|{Index.Y}]";
-        RoomObject.tag = "Room";
+        Vector3 position = new Vector3((index.X * width), (index.Y * height), 0);
 
-        RoomObject.transform.position = new Vector3((index.X * width), (index.Y * height), 0);
+        BoundingBox = new BoundingBox(position, width, height);
 
-        BoundingBox = new BoundingBox(RoomObject.transform.position, width, height);
-        if (Index == (0, 0))
+        if (generateObject)
         {
-            GameObject.Destroy(RoomObject.GetComponent<BoxCollider2D>());
-        }
-        else
-        {
-            BoxCollider2D collider = RoomObject.GetComponent<BoxCollider2D>();
-            collider.size = new Vector2(width, height);
-            collider.offset = new Vector2(width / 2, height / 2);
-        }
+            RoomObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Baseroom"));
+            RoomObject.name = $"Room [{Index.X}|{Index.Y}]";
+            RoomObject.tag = "Room";
 
-
+            RoomObject.transform.position = position;
+            if (Index == (0, 0))
+            {
+                GameObject.Destroy(RoomObject.GetComponent<BoxCollider2D>());
+            }
+            else
+            {
+                BoxCollider2D collider = RoomObject.GetComponent<BoxCollider2D>();
+                collider.size = new Vector2(width, height);
+                collider.offset = new Vector2(width / 2, height / 2);
+            }
+        }
     }
 
     public void ChangeIndex((int X, int Y) Index)

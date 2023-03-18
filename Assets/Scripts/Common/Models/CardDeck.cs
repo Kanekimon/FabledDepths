@@ -39,15 +39,20 @@ public class CardDeck
     public List<RoomCard> DrawCards(int numberOfCards)
     {
         List<RoomCard> drawn = new List<RoomCard>();
-        for(int i = 0; i < numberOfCards; i++)
+        for (int i = 0; i < numberOfCards; i++)
         {
             RoomCard cardDrawn = _playingDeck.Pop();
+
+            // Move the drawn card to the bottom of the deck
+            Stack<RoomCard> tempStack = new Stack<RoomCard>();
+            tempStack.Push(cardDrawn);
+            while (_playingDeck.Count > 0)
+            {
+                tempStack.Push(_playingDeck.Pop());
+            }
+            _playingDeck = tempStack;
+
             drawn.Add(cardDrawn);
-            Stack<RoomCard> tmp = new Stack<RoomCard>(_playingDeck.Reverse());
-            _playingDeck.Clear();
-            _playingDeck.Push(cardDrawn);
-            while (tmp.Count > 0)
-                _playingDeck.Push(tmp.Pop());
         }
         return drawn;
     }

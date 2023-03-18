@@ -6,9 +6,14 @@ public class Dropable : MonoBehaviour
 {
     bool isRegistered;
 
+    private void Start()
+    {
+
+    }
+
     private void OnMouseOver()
     {
-        if(DragDropManager.Instance.CurrentlyDragging != null)
+        if (DragDropManager.Instance.IsDragging)
         {
             DragDropManager.Instance.RegisterDropable(this);
             Debug.Log("Draggable Is Over");

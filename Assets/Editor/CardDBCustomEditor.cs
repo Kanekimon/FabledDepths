@@ -19,6 +19,10 @@ public class CardDBCustomEditor : Editor
         if(GUILayout.Button("Create starter deck"))
         {
             cardDB.CreateStarterDeck();
+            cardDB.Decks.First().ShuffleDeck();
+            DatabaseManager.Instance.SaveCard(cardDB.Decks.First().DrawCards(3).FirstOrDefault());
+
+
         }
 
         if(GUILayout.Button("Save decks"))
@@ -26,10 +30,13 @@ public class CardDBCustomEditor : Editor
             cardDB.SaveDecks();
         }
 
+        if (GUILayout.Button("Shuffle"))
+        {
+            cardDB.Decks.First().ShuffleDeck();
+        }
 
         if(GUILayout.Button("Draw Cards"))
         {
-            cardDB.Decks.First().ShuffleDeck();
             List<RoomCard> cards = cardDB.Decks.First().DrawCards(3);
             foreach (RoomCard c in cards)
             {

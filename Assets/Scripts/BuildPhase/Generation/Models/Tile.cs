@@ -50,12 +50,16 @@ public class Tile
     }
 
 
-    public Tile(int x, int y, Transform parent, TileType tileType = TileType.normal, DoorPlacement doorPlacement = DoorPlacement.none)
+    public Tile(int x, int y, TileType tileType = TileType.normal, DoorPlacement doorPlacement = DoorPlacement.none)
     {
         _x = x;
         _y = y;
         _tileType = tileType;
+        _doorPlacement = doorPlacement;
+    }
 
+    public void InstantiateTile(Transform parent)
+    {
         if (TileType == TileType.normal)
             _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Tile"));
         else if (TileType == TileType.edge)
@@ -63,13 +67,13 @@ public class Tile
         else if (TileType == TileType.door)
         {
             _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Door"));
-            _doorPlacement = doorPlacement;
-            if(_doorPlacement.HasFlag(DoorPlacement.west | DoorPlacement.east)) RotateDoor();
+
+            if (_doorPlacement.HasFlag(DoorPlacement.west | DoorPlacement.east)) RotateDoor();
         }
 
         _tileObject.transform.parent = parent;
         _tileObject.transform.localPosition = new Vector3(_x, _y, 0);
-        _tileObject.name = $"Tile({tileType}) [{_x},{_y}]";
+        _tileObject.name = $"Tile({_tileType}) [{_x},{_y}]";
     }
 
 

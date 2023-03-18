@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7124466003376422608}
   - component: {fileID: -7098093582799115986}
   - component: {fileID: 4740022729649752252}
+  - component: {fileID: 4000898183689946525}
   m_Layer: 0
   m_Name: PlaceholderRoom
   m_TagString: Untagged
@@ -142,5 +143,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f7389afa3067554eab947d71665e4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4000898183689946525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 178671225554428717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ead482be732ca747b5515c22b94a162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

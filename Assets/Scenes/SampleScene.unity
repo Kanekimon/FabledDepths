@@ -278,6 +278,7 @@ GameObject:
   - component: {fileID: 811240789}
   - component: {fileID: 811240788}
   - component: {fileID: 811240787}
+  - component: {fileID: 811240794}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -327,6 +328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentlyDragging: {fileID: 0}
+  IsDragging: 0
   CurrentlyOver: {fileID: 0}
   originialPos: {x: 0, y: 0, z: 0}
   Cam: {fileID: 582592905}
@@ -385,6 +387,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &811240794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811240786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68338157db3f9df409ea586818a49b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &923985128
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +484,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1912561365}
   - component: {fileID: 1912561364}
+  - component: {fileID: 1912561366}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -489,7 +504,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 0}
+  m_PanelSettings: {fileID: 11400000, guid: de7a79c24f89fc74794ee631c49cdffe, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 16a9c75d94e756747968025fdccf5f5e, type: 3}
   m_SortingOrder: 0
@@ -508,3 +523,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1912561366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1912561363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5d5a85f58e0d348b280e6d91279dda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -10,4 +10,5 @@ public class PlaceholderClickHandler : MonoBehaviour
         BuildManager.Instance.RegisterRoom(this);
 
     }
+
 }

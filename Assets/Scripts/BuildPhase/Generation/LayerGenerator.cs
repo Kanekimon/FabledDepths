@@ -10,20 +10,24 @@ public class LayerGenerator : IGenerator
     public int[] XMask = new int[] { -1, 0, 1, 1, 1, 0, -1, -1 };
     public int[] YMask = new int[] { 1, 1, 1, 0, -1, -1, -1, 0 };
 
-    public Room GenerateRoom((int X,int Y) Index, RoomConfiguration rC, int width, int height, GameObject container = null)
+
+    public Room GenerateRoom((int X,int Y) Index, RoomConfiguration rC, int width, int height, GameObject container = null, bool generateGameObject = true)
     {
 
         Room r = new Room();
-        r.Init(Index, width, height);
-
-
-        if (container != null)
-            r.RoomObject.transform.parent = container.transform;
-
+        r.Init(Index, width, height, generateGameObject);
         CreateBaseTileMap(ref r, rC);
-        CreateDoors(ref r, rC);
-        CreateObstacles(ref r, rC);
-        //CreateMonsterSpawns();
+
+        if (generateGameObject)
+        {
+            if (container != null)
+                r.RoomObject.transform.parent = container.transform;
+
+            CreateBaseTileMap(ref r, rC);
+            CreateDoors(ref r, rC);
+            CreateObstacles(ref r, rC);
+            //CreateMonsterSpawns();
+        }
         return r;
     }
 
@@ -94,23 +98,23 @@ public class LayerGenerator : IGenerator
 
         if (rC.DoorPlacement.HasFlag(DoorPlacement.north))
         {
-            r[(int)c.XminYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XminYmin.x, (int)r.BoundingBox.Height-1, r.RoomObject.transform, TileType.door, DoorPlacement.north);
-            r[(int)c.XmaxYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XmaxYmin.x, (int)r.BoundingBox.Height-1, r.RoomObject.transform, TileType.door, DoorPlacement.north);
+            r[(int)c.XminYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XminYmin.x, (int)r.BoundingBox.Height-1, TileType.door, DoorPlacement.north);
+            r[(int)c.XmaxYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XmaxYmin.x, (int)r.BoundingBox.Height-1, TileType.door, DoorPlacement.north);
         }
         if (rC.DoorPlacement.HasFlag(DoorPlacement.east))
         {
-            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmin.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmin.y,  r.RoomObject.transform, TileType.door, DoorPlacement.east);
-            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmax.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmax.y, r.RoomObject.transform, TileType.door, DoorPlacement.east);
+            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmin.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmin.y, TileType.door, DoorPlacement.east);
+            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmax.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmax.y, TileType.door, DoorPlacement.east);
         }
         if (rC.DoorPlacement.HasFlag(DoorPlacement.south))
         {
-            r[(int)c.XminYmin.x, 0] = new Tile((int)c.XminYmin.x, 0, r.RoomObject.transform, TileType.door, DoorPlacement.north) ;
-            r[(int)c.XmaxYmin.x, 0] = new Tile((int)c.XmaxYmin.x, 0, r.RoomObject.transform, TileType.door, DoorPlacement.north);
+            r[(int)c.XminYmin.x, 0] = new Tile((int)c.XminYmin.x, 0, TileType.door, DoorPlacement.north) ;
+            r[(int)c.XmaxYmin.x, 0] = new Tile((int)c.XmaxYmin.x, 0, TileType.door, DoorPlacement.north);
         }
         if (rC.DoorPlacement.HasFlag(DoorPlacement.west))
         {
-            r[0, (int)c.XminYmin.y] = new Tile(0, (int)c.XminYmin.y, r.RoomObject.transform, TileType.door, DoorPlacement.west);
-            r[0, (int)c.XminYmax.y] = new Tile(0, (int)c.XminYmax.y, r.RoomObject.transform, TileType.door, DoorPlacement.west);
+            r[0, (int)c.XminYmin.y] = new Tile(0, (int)c.XminYmin.y, TileType.door, DoorPlacement.west);
+            r[0, (int)c.XminYmax.y] = new Tile(0, (int)c.XminYmax.y, TileType.door, DoorPlacement.west);
         }
         r.Doors = rC.DoorPlacement;
 
@@ -125,10 +129,10 @@ public class LayerGenerator : IGenerator
 
         if (x == bb.MinX - xOffset || x == bb.MaxX - xOffset || y == bb.MinY - yOffset || y == bb.MaxY - yOffset)
         {
-            return new Tile(x, y, r.RoomObject.transform, TileType.edge);
+            return new Tile(x, y, TileType.edge);
         }
         else
-            return new Tile(x, y, r.RoomObject.transform);
+            return new Tile(x, y);
 
     }
 

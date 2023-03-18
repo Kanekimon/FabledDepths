@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -95,10 +96,21 @@ public class RoomSaveData
                     }
                 }
             }
-            r[tileX, tileY] = new Tile(tileX, tileY, r.RoomObject.transform, tt, dp);
+            r[tileX, tileY] = new Tile(tileX, tileY, tt, dp);
         }
         return r;
 
+    }
+
+    public string ToJson()
+    {
+        JsonSerializerSettings settings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+        return JsonConvert.SerializeObject(this, settings);
     }
 
 

@@ -8,17 +8,14 @@ using UnityEngine;
 public class DragDropManager : Singleton<DragDropManager>
 {
     public Draggable CurrentlyDragging;
+    public bool IsDragging;
     public Dropable CurrentlyOver;
     public Vector3 originialPos;
     public Camera Cam;
 
     private void Update()
     {
-        if(CurrentlyDragging != null)
-        {
-            Vector3 mousepos = Cam.ScreenToWorldPoint(Input.mousePosition); //- new Vector3(BuildManager.Instance.Settings.RoomWidth/2, BuildManager.Instance.Settings.RoomHeight/2,0);
-            CurrentlyDragging.transform.position = new Vector3(mousepos.x, mousepos.y, originialPos.z);
-        }
+
     }
 
     public void RegisterDraggable(Draggable dragObject)

@@ -26,17 +26,17 @@ public class CardDB : Singleton<CardDB>
 
         CardDeck deck = new CardDeck();
         deck.DeckName = "Start";
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_0", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(0)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_1", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(1)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_2", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(2)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_3", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(3)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_4", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(4)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_5", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(5)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_6", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(6)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_7", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(7)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_8", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(8)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_9", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(9)) });
-        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_10", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(10)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_0", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(0, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_1", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(1, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_2", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(2, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_3", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(3, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_4", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(4, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_5", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(5, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_6", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(6, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_7", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(7, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_8", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(8, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_9", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(9, false)) });
+        deck.AddCard(new RoomCard() { Id = Guid.NewGuid().ToString(), Name = "Test_10", Type = RoomType.monster, Room = RoomSaveData.SaveRoom(RoomGenerationManager.Instance.GenerateRoom(10, false)) });
         _decks.Add(deck);
     }
 

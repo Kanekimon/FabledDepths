@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class UiManager : Singleton<UiManager>
 {
@@ -57,6 +58,9 @@ public class UiManager : Singleton<UiManager>
 
     public void CreateCard(RoomCard c)
     {
+        if (_cards.ContainsKey(c.Id))
+            return;
+
         VisualTreeAsset vta = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Scripts/BuildPhase/UI/Card.uxml");
         VisualElement vE = vta.Instantiate();
         vE.name = c.Id;
@@ -84,12 +88,14 @@ public class UiManager : Singleton<UiManager>
 
     private void PointerDownEvent(PointerDownEvent e)
     {
+        DragDropManager.Instance.IsDragging = true;
         isDragging = true;
         pointerStartPosition = e.position;
         target = (VisualElement)e.currentTarget;
         targetStartPosition = target.transform.position;
         target.RemoveFromHierarchy();
         AbsoluteContainer.Add(target);
+        target.AddToClassList("abs_container");
         target.style.width = new StyleLength(new Length(50, LengthUnit.Percent));
         //Test.style.position = new StyleEnum<Position>(Position.Absolute); 
         target.CapturePointer(e.pointerId);
@@ -102,8 +108,8 @@ public class UiManager : Singleton<UiManager>
             Vector3 pointerDelta = evt.position - pointerStartPosition;
 
             target.transform.position = new Vector2(
-                Mathf.Clamp(targetStartPosition.x + pointerDelta.x, 0, target.panel.visualTree.worldBound.width),
-                Mathf.Clamp(targetStartPosition.y + pointerDelta.y, 0, target.panel.visualTree.worldBound.height));
+                Mathf.Clamp(targetStartPosition.x + evt.position.x, 0, target.panel.visualTree.worldBound.width),
+                Mathf.Clamp(targetStartPosition.y + evt.position.y, 0, target.panel.visualTree.worldBound.height));
         }
     }
 
@@ -120,11 +126,12 @@ public class UiManager : Singleton<UiManager>
             else
             {
                 target.RemoveFromHierarchy();
+                target.RemoveFromClassList("abs_container");
                 CardContainer.Add(target);
 
                 target.transform.position = targetStartPosition;
             }
-
+            DragDropManager.Instance.IsDragging = false;
         }
     }
 
