@@ -7,7 +7,7 @@ public class PlaceholderClickHandler : MonoBehaviour
     private void OnMouseDown()
     {
 
-        BuildManager.Instance.RegisterRoom(this);
+        //BuildManager.Instance.RegisterRoom(this);
 
     }
 

@@ -50,12 +50,18 @@ public class Tile
     }
 
 
-    public Tile(int x, int y, TileType tileType = TileType.normal, DoorPlacement doorPlacement = DoorPlacement.none)
+    public Tile(int x, int y, TileType tileType = TileType.normal, DoorPlacement doorPlacement = DoorPlacement.none, Transform parent = null)
     {
         _x = x;
         _y = y;
         _tileType = tileType;
         _doorPlacement = doorPlacement;
+
+
+        if (parent != null)
+        {
+            InstantiateTile(parent);
+        }
     }
 
     public void InstantiateTile(Transform parent)

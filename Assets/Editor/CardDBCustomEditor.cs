@@ -35,16 +35,7 @@ public class CardDBCustomEditor : Editor
             cardDB.Decks.First().ShuffleDeck();
         }
 
-        if(GUILayout.Button("Draw Cards"))
-        {
-            List<RoomCard> cards = cardDB.Decks.First().DrawCards(3);
-            foreach (RoomCard c in cards)
-            {
-                UiManager.Instance.CreateCard(c);
-            }
 
-
-        }
     }
 
 }

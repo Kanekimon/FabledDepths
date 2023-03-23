@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum BuildMode
@@ -71,6 +72,17 @@ public class BuildManager : Singleton<BuildManager>
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    public KeyValuePair<(int x, int y), BaseRoom> GetRoom(int x, int y)
+    {
+        return RoomMap.Where(r => r.Key == (x,y)).FirstOrDefault();
+    }
+
 
     /// <summary>
     /// Checks if the room needs to be linked to adjacend rooms
@@ -135,13 +147,13 @@ public class BuildManager : Singleton<BuildManager>
         {
             if (child.name.Contains("Placeholder"))
             {
-                RoomMap.Remove(child.GetComponent<PlaceholderRoom>().Index);
+                RoomMap.Remove( RoomMap.Where(x => x.Value.RoomObject.transform == child).FirstOrDefault().Key);
                 Destroy(child.gameObject);
                
             }
             else
             {
-                child.GetComponent<BaseRoom>().Adjacend.Clear();
+                RoomMap.Where(x => x.Value.RoomObject.transform == child).FirstOrDefault().Value.Adjacend.Clear();
             }
         }
 
@@ -260,6 +272,20 @@ public class BuildManager : Singleton<BuildManager>
 
         RoomMap[Index] = plRoom;
         return plRoom;
+    }
+
+    public PlaceholderRoom GetPlaceholder(GameObject plcObject)
+    {
+        try
+        {
+            KeyValuePair<(int X, int Y), BaseRoom> placeholder = RoomMap.Where(x => x.Value.RoomObject != null && x.Value.RoomObject == plcObject).FirstOrDefault();
+
+            return (PlaceholderRoom)placeholder.Value;
+        }
+        catch(Exception ex)
+        {
+            return null;
+        }
     }
 }
 

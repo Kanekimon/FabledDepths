@@ -52,9 +52,8 @@ public class RoomSaveData
 
     public static Room LoadRoom(RoomSaveData rsd)
     {
-
-        GameObject room = GameObject.Instantiate(Resources.Load<GameObject>("Room/BaseRoom"));
-        Room r = room.GetComponent<Room>();
+        Room r = new Room();
+            
         r.Init((rsd.XIndex, rsd.YIndex), rsd.RoomWidth, rsd.RoomHeight);
         r.Doors = rsd.Doors;
 
@@ -96,7 +95,7 @@ public class RoomSaveData
                     }
                 }
             }
-            r[tileX, tileY] = new Tile(tileX, tileY, tt, dp);
+            r[tileX, tileY] = new Tile(tileX, tileY, tt, dp, r.RoomObject.transform);
         }
         return r;
 

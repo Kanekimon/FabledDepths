@@ -10,7 +10,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class UiManager : Singleton<UiManager>
 {
- 
+
 
     public VisualElement root;
     public Button BuildToggle;
@@ -64,6 +64,7 @@ public class UiManager : Singleton<UiManager>
         VisualTreeAsset vta = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Scripts/BuildPhase/UI/Card.uxml");
         VisualElement vE = vta.Instantiate();
         vE.name = c.Id;
+        vE.style.height = new StyleLength(100);
         CardContainer.Add(vE);
         _cards.Add(c.Id, vE);
 
@@ -99,6 +100,8 @@ public class UiManager : Singleton<UiManager>
         target.style.width = new StyleLength(new Length(50, LengthUnit.Percent));
         //Test.style.position = new StyleEnum<Position>(Position.Absolute); 
         target.CapturePointer(e.pointerId);
+
+        Debug.Log(Dev_Card_Builder.Instance.GetCardFromDeck(target.name).Room.Doors);
     }
 
     private void PointerMoveEvent(PointerMoveEvent evt)
@@ -110,6 +113,18 @@ public class UiManager : Singleton<UiManager>
             target.transform.position = new Vector2(
                 Mathf.Clamp(targetStartPosition.x + evt.position.x, 0, target.panel.visualTree.worldBound.width),
                 Mathf.Clamp(targetStartPosition.y + evt.position.y, 0, target.panel.visualTree.worldBound.height));
+
+            if (DragDropManager.Instance.IsOverDropArea())
+            {
+                if (DragDropManager.Instance.CanDropOnPlaceholder(DragDropManager.Instance.CurrentlyOver.gameObject, target.name))
+                {
+                    DragDropManager.Instance.CurrentlyOver.gameObject.GetComponent<Renderer>().material.color = Color.green;
+                }
+                else
+                {
+                    DragDropManager.Instance.CurrentlyOver.gameObject.GetComponent<Renderer>().material.color = Color.red;
+                }
+            }
         }
     }
 
@@ -119,9 +134,10 @@ public class UiManager : Singleton<UiManager>
         {
             target.ReleasePointer(e.pointerId);
 
-            if (DragDropManager.Instance.IsOverDropArea())
+            if (DragDropManager.Instance.IsOverDropArea() && DragDropManager.Instance.CanDropOnPlaceholder(DragDropManager.Instance.CurrentlyOver.gameObject, target.name))
             {
                 target.parent.Remove(target);
+                BuildManager.Instance.RegisterRoom(BuildManager.Instance.GetPlaceholder(DragDropManager.Instance.CurrentlyOver.gameObject), Dev_Card_Builder.Instance.GetCardFromDeck(target.name).Room);
             }
             else
             {

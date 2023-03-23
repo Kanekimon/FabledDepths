@@ -37,6 +37,15 @@ public class RoomGenerationManager : Singleton<RoomGenerationManager>
         return r;
     }
 
+    public Room GenerateRoom(RoomType roomType, DoorPlacement doorFlags)
+    {
+        if (_generator == null)
+            _generator = new LayerGenerator();
+
+        Room r = _generator.GenerateRoom((-100, -100), new RoomConfiguration() { RoomType = roomType, DoorPlacement = doorFlags}, BuildManager.Instance.Settings.RoomWidth, BuildManager.Instance.Settings.RoomHeight, null, false);
+        return r;
+    }
+
     public PlaceholderRoom GeneratePlaceholder((int X, int Y) Index, int width, int height, GameObject container)
     {
         if (_generator == null)

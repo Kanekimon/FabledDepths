@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LayerGenerator : IGenerator
@@ -16,23 +17,28 @@ public class LayerGenerator : IGenerator
 
         Room r = new Room();
         r.Init(Index, width, height, generateGameObject);
-        CreateBaseTileMap(ref r, rC);
-
+        r.Doors = rC.DoorPlacement;
+        GenerateTiles(r, rC, r.RoomObject != null ? r.RoomObject.transform : null);
         if (generateGameObject)
         {
             if (container != null)
                 r.RoomObject.transform.parent = container.transform;
-
-            CreateBaseTileMap(ref r, rC);
-            CreateDoors(ref r, rC);
-            CreateObstacles(ref r, rC);
-            //CreateMonsterSpawns();
         }
+
+
+           
         return r;
     }
 
+    void GenerateTiles(Room r, RoomConfiguration rC, Transform parent = null)
+    {
+        CreateBaseTileMap(ref r, rC, parent);
+        CreateDoors(ref r, rC, parent);
+        CreateObstacles(ref r, rC, parent);
+    }
 
-    void CreateBaseTileMap(ref Room r, RoomConfiguration rC)
+
+    void CreateBaseTileMap(ref Room r, RoomConfiguration rC, Transform parent = null)
     {
         for (int x = 0; x < r.BoundingBox.Width; x++)
         {
@@ -40,13 +46,13 @@ public class LayerGenerator : IGenerator
             {
                 if (r[x, y] == null)
                 {
-                    r[x, y] = GenerateTile(x, y, r.BoundingBox, r);
+                    r[x, y] = GenerateTile(x, y, r.BoundingBox, r, parent);
                 }
             }
         }
     }
 
-    private void CreateObstacles(ref Room r, RoomConfiguration rC)
+    private void CreateObstacles(ref Room r, RoomConfiguration rC, Transform parent = null)
     {       
         Stack<Vector3> spawnPoints = new Stack<Vector3>();
         List<Vector3> closed = new List<Vector3>();
@@ -91,37 +97,37 @@ public class LayerGenerator : IGenerator
 
 
 
-    void CreateDoors(ref Room r, RoomConfiguration rC)
+    void CreateDoors(ref Room r, RoomConfiguration rC, Transform parent = null)
     {
         (Vector2 XminYmin, Vector2 XmaxYmin, Vector2 XminYmax, Vector2 XmaxYmax) c = r.BoundingBox.LocalCenter;
 
 
         if (rC.DoorPlacement.HasFlag(DoorPlacement.north))
         {
-            r[(int)c.XminYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XminYmin.x, (int)r.BoundingBox.Height-1, TileType.door, DoorPlacement.north);
-            r[(int)c.XmaxYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XmaxYmin.x, (int)r.BoundingBox.Height-1, TileType.door, DoorPlacement.north);
+            r[(int)c.XminYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XminYmin.x, (int)r.BoundingBox.Height-1, TileType.door, DoorPlacement.north, parent);
+            r[(int)c.XmaxYmin.x, (int)r.BoundingBox.Height - 1] = new Tile((int)c.XmaxYmin.x, (int)r.BoundingBox.Height-1, TileType.door, DoorPlacement.north, parent);
         }
         if (rC.DoorPlacement.HasFlag(DoorPlacement.east))
         {
-            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmin.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmin.y, TileType.door, DoorPlacement.east);
-            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmax.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmax.y, TileType.door, DoorPlacement.east);
+            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmin.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmin.y, TileType.door, DoorPlacement.east, parent);
+            r[(int)r.BoundingBox.Width - 1, (int)c.XminYmax.y] = new Tile((int)r.BoundingBox.Width-1, (int)c.XminYmax.y, TileType.door, DoorPlacement.east, parent);
         }
         if (rC.DoorPlacement.HasFlag(DoorPlacement.south))
         {
-            r[(int)c.XminYmin.x, 0] = new Tile((int)c.XminYmin.x, 0, TileType.door, DoorPlacement.north) ;
-            r[(int)c.XmaxYmin.x, 0] = new Tile((int)c.XmaxYmin.x, 0, TileType.door, DoorPlacement.north);
+            r[(int)c.XminYmin.x, 0] = new Tile((int)c.XminYmin.x, 0, TileType.door, DoorPlacement.north, parent) ;
+            r[(int)c.XmaxYmin.x, 0] = new Tile((int)c.XmaxYmin.x, 0, TileType.door, DoorPlacement.north, parent);
         }
         if (rC.DoorPlacement.HasFlag(DoorPlacement.west))
         {
-            r[0, (int)c.XminYmin.y] = new Tile(0, (int)c.XminYmin.y, TileType.door, DoorPlacement.west);
-            r[0, (int)c.XminYmax.y] = new Tile(0, (int)c.XminYmax.y, TileType.door, DoorPlacement.west);
+            r[0, (int)c.XminYmin.y] = new Tile(0, (int)c.XminYmin.y, TileType.door, DoorPlacement.west, parent);
+            r[0, (int)c.XminYmax.y] = new Tile(0, (int)c.XminYmax.y, TileType.door, DoorPlacement.west, parent);
         }
         r.Doors = rC.DoorPlacement;
 
     }
 
 
-    Tile GenerateTile(int x, int y, BoundingBox bb, Room r)
+    Tile GenerateTile(int x, int y, BoundingBox bb, Room r, Transform parent = null)
     {
         int xOffset = r.Index.X * bb.Width;
         int yOffset = r.Index.Y * bb.Height;
@@ -129,10 +135,10 @@ public class LayerGenerator : IGenerator
 
         if (x == bb.MinX - xOffset || x == bb.MaxX - xOffset || y == bb.MinY - yOffset || y == bb.MaxY - yOffset)
         {
-            return new Tile(x, y, TileType.edge);
+            return new Tile(x, y, TileType.edge, DoorPlacement.none, parent);
         }
         else
-            return new Tile(x, y);
+            return new Tile(x, y, TileType.normal, DoorPlacement.none, parent);
 
     }
 

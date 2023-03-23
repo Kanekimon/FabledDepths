@@ -68,5 +68,9 @@ public class CardDeck
         _cards.Add(card);
     }
 
+    public void AddCards(List<RoomCard> cards)
+    {
+        _cards.AddRange(cards);
+    }
 }
 

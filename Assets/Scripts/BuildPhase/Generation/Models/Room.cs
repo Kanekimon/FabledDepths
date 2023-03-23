@@ -83,7 +83,7 @@ public class Room : BaseRoom
             {
                 Tile t = _tiles.Where(t => t.X == x && t.Y == y).First();
                 _tiles.Remove(t);
-                GameObject.Destroy(t.TileObject);
+                GameObject.DestroyImmediate(t.TileObject);
             }
             _tiles.Add(value);
         }
@@ -109,9 +109,9 @@ public class Room : BaseRoom
             RoomObject.tag = "Room";
 
             RoomObject.transform.position = position;
-            if (Index == (0, 0))
+            if (generateObject && Index == (0, 0))
             {
-                GameObject.Destroy(RoomObject.GetComponent<BoxCollider2D>());
+                GameObject.DestroyImmediate(RoomObject.GetComponent<BoxCollider2D>());
             }
             else
             {
