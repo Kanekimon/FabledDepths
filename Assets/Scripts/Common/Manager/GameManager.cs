@@ -21,7 +21,7 @@ public class GameManager : Singleton<GameManager>
     protected virtual void Start()
     {
         BuildManager.Instance.InitBuildingPhase(0);
-        Dev_Card_Builder.Instance.DrawCards();
+        //Dev_Card_Builder.Instance.DrawCards();
     }
 
 

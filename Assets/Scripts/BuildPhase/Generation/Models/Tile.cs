@@ -9,6 +9,7 @@ public enum TileType
 {
     edge,
     door, 
+    path,
     normal
 }
 
@@ -19,6 +20,7 @@ public class Tile
     private GameObject _tileObject;
     private TileType _tileType;
     private DoorPlacement _doorPlacement;
+
 
     public float X
     {
@@ -70,6 +72,10 @@ public class Tile
             _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Tile"));
         else if (TileType == TileType.edge)
             _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Wall"));
+        else if(TileType == TileType.path)
+        {
+            _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Path"));
+        }
         else if (TileType == TileType.door)
         {
             _tileObject = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Door"));
