@@ -4,8 +4,22 @@
         <ui:VisualElement name="VE_Left_Base" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 100%; width: 10%;">
             <ui:Button text="Toggle Move Mode" display-tooltip-when-elided="true" name="Button_BuildToggle" style="width: 100%; height: 10%;" />
         </ui:VisualElement>
-        <ui:VisualElement name="VE_Center_Base" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 100%; width: 80%;" />
+        <ui:VisualElement name="VE_Center_Base" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 100%; width: 80%;">
+            <ui:VisualElement name="VE_Center_Top" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 10%;" />
+            <ui:VisualElement name="VE_Center_Mid" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 70%;" />
+            <ui:VisualElement name="VE_Center_Bottom" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 20%; justify-content: flex-start; align-self: auto; align-items: center;">
+                <ui:VisualElement name="Card_View" class="expanded_style" style="justify-content: space-evenly; align-self: auto; align-items: center; flex-direction: row;">
+                    <ui:VisualElement name="Card_Slot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 80%; width: 15%; max-height: 80%; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; max-width: 15%;" />
+                    <ui:VisualElement name="Card_Slot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 80%; width: 15%; max-height: 80%; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; max-width: 15%;" />
+                    <ui:VisualElement name="Card_Slot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 80%; width: 15%; max-height: 80%; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; max-width: 15%;" />
+                    <ui:VisualElement name="Card_Slot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 80%; width: 15%; max-height: 80%; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; max-width: 15%;" />
+                    <ui:VisualElement name="Card_Slot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 80%; width: 15%; max-height: 80%; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; max-width: 15%;" />
+                    <ui:VisualElement name="Card_Slot" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 80%; width: 15%; max-height: 80%; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; max-width: 15%;" />
+                </ui:VisualElement>
+                <ui:Button text="Open" display-tooltip-when-elided="true" name="Expand_Card_View" style="width: 30%; bottom: auto; height: 10%; padding-bottom: 10px; margin-bottom: 10px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:VisualElement name="VE_Right_Base" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 100%; width: 10%;" />
     </ui:VisualElement>
-    <ui:VisualElement name="VE_Absolute" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); position: absolute; width: 100%; height: 100%; align-items: auto;" />
+    <ui:VisualElement name="VE_Absolute" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); position: absolute; width: 100%; height: 100%; align-items: auto; top: -3px; left: 4px;" />
 </ui:UXML>

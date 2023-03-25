@@ -14,8 +14,12 @@ public class UiManager : Singleton<UiManager>
 
     public VisualElement root;
     public Button BuildToggle;
+    public Button FoldOut_CardView;
     public VisualElement CardContainer;
     public VisualElement AbsoluteContainer;
+    public VisualElement Card_View;
+
+    List<VisualElement> _card_slots = new List<VisualElement>();
 
 
     private bool isDragging = false;
@@ -31,13 +35,35 @@ public class UiManager : Singleton<UiManager>
         BuildToggle.clicked += ToggleBuildMode;
         CardContainer = root.Q<VisualElement>("VE_Right_Base");
         AbsoluteContainer = root.Q<VisualElement>("VE_Absolute");
+        Card_View = root.Q<VisualElement>("Card_View");
+        FoldOut_CardView = root.Q<Button>("Expand_Card_View");
+        FoldOut_CardView.clicked += ToggleFold;
 
+        InitCardSlots();
     }
+
+    void InitCardSlots()
+    {
+        foreach (var cardslot in Card_View.Children())
+        {
+            _card_slots.Add(cardslot);
+        }
+    }
+
 
     private void OnDisable()
     {
         BuildToggle.clicked -= ToggleBuildMode;
+        FoldOut_CardView.clicked -= ToggleFold;
+
     }
+
+
+    public void ToggleFold()
+    {
+        Card_View.ToggleInClassList("fold_view");
+    }
+
 
 
     public void ToggleBuildMode()
@@ -58,15 +84,27 @@ public class UiManager : Singleton<UiManager>
 
     public void CreateCard(RoomCard c)
     {
+        VisualElement cardslot = _card_slots.Where(x => x.childCount == 0).FirstOrDefault();
+
+        if (cardslot == null)
+            return;
+
         if (_cards.ContainsKey(c.Id))
             return;
 
+
+     
+
         VisualTreeAsset vta = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Scripts/BuildPhase/UI/Card.uxml");
         VisualElement vE = vta.Instantiate();
+
+        CreateBitMap(RoomSaveData.LoadRoom(c.Room), vE);
+
         vE.name = c.Id;
-        vE.style.height = new StyleLength(100);
-        CardContainer.Add(vE);
-        _cards.Add(c.Id, vE);
+        vE.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+        vE.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+        cardslot.Add(vE);
+        _cards.Add(c.Id, cardslot);
 
         vE.RegisterCallback<PointerDownEvent>(PointerDownEvent);
         vE.RegisterCallback<PointerMoveEvent>(PointerMoveEvent);
@@ -87,6 +125,33 @@ public class UiManager : Singleton<UiManager>
     }
 
 
+    void CreateBitMap(Room r, VisualElement v)
+    {
+
+        Texture2D texture = new Texture2D(r.BoundingBox.Width, r.BoundingBox.Height);
+
+        foreach (var tile in r.Tiles)
+        {
+            Color c = new Color();
+            if (tile.TileType == TileType.edge)
+                c = Color.grey;
+            else if (tile.TileType == TileType.door)
+                c = Color.black;
+            else
+                c = Color.green;
+
+            texture.SetPixel((int)tile.X, (int)tile.Y, c);
+            texture.Apply();
+        }
+
+        v.Q<VisualElement>("VE_Card").style.backgroundImage = new StyleBackground(texture);
+        v.Q<VisualElement>("VE_Card").style.backgroundPositionX = new BackgroundPosition(BackgroundPositionKeyword.Center);
+        v.Q<VisualElement>("VE_Card").style.backgroundPositionY = new BackgroundPosition(BackgroundPositionKeyword.Center);
+        v.Q<VisualElement>("VE_Card").style.backgroundRepeat = new BackgroundRepeat(Repeat.NoRepeat, Repeat.NoRepeat);
+        v.Q<VisualElement>("VE_Card").style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
+    }
+
+
     private void PointerDownEvent(PointerDownEvent e)
     {
         DragDropManager.Instance.IsDragging = true;
@@ -97,7 +162,7 @@ public class UiManager : Singleton<UiManager>
         target.RemoveFromHierarchy();
         AbsoluteContainer.Add(target);
         target.AddToClassList("abs_container");
-        target.style.width = new StyleLength(new Length(50, LengthUnit.Percent));
+        //target.style.width = new StyleLength(new Length(50, LengthUnit.Percent));
         //Test.style.position = new StyleEnum<Position>(Position.Absolute); 
         target.CapturePointer(e.pointerId);
 
@@ -136,6 +201,7 @@ public class UiManager : Singleton<UiManager>
 
             if (DragDropManager.Instance.IsOverDropArea() && DragDropManager.Instance.CanDropOnPlaceholder(DragDropManager.Instance.CurrentlyOver.gameObject, target.name))
             {
+                _cards.Remove(_cards.Where(x => x.Key == target.name).FirstOrDefault().Key);
                 target.parent.Remove(target);
                 BuildManager.Instance.RegisterRoom(BuildManager.Instance.GetPlaceholder(DragDropManager.Instance.CurrentlyOver.gameObject), Dev_Card_Builder.Instance.GetCardFromDeck(target.name).Room);
             }
@@ -143,8 +209,9 @@ public class UiManager : Singleton<UiManager>
             {
                 target.RemoveFromHierarchy();
                 target.RemoveFromClassList("abs_container");
-                CardContainer.Add(target);
-
+                _cards.Where(x => x.Key == target.name).FirstOrDefault().Value.Add(target);
+                target.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+                target.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
                 target.transform.position = targetStartPosition;
             }
             DragDropManager.Instance.IsDragging = false;

@@ -213,7 +213,7 @@ MonoBehaviour:
   MoveSpeed: 10
   cam: {fileID: 582592905}
   maxZoom: 5
-  minZoom: 20
+  minZoom: 50
   sensitivity: 1
   speed: 30
 --- !u!81 &582592904
