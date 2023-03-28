@@ -98,7 +98,7 @@ public class UiManager : Singleton<UiManager>
         VisualTreeAsset vta = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Scripts/BuildPhase/UI/Card.uxml");
         VisualElement vE = vta.Instantiate();
 
-        CreateBitMap(RoomSaveData.LoadRoom(c.Room), vE);
+        CreateBitMap(RoomSaveData.LoadRoom(c.Room, false), vE);
 
         vE.name = c.Id;
         vE.style.height = new StyleLength(new Length(100, LengthUnit.Percent));

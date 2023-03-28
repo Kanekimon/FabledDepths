@@ -16,15 +16,6 @@ public class CardDBCustomEditor : Editor
         CardDB cardDB = (CardDB)target;
 
 
-        if(GUILayout.Button("Create starter deck"))
-        {
-            cardDB.CreateStarterDeck();
-            cardDB.Decks.First().ShuffleDeck();
-            DatabaseManager.Instance.SaveCard(cardDB.Decks.First().DrawCards(3).FirstOrDefault());
-
-
-        }
-
         if(GUILayout.Button("Save decks"))
         {
             cardDB.SaveDecks();

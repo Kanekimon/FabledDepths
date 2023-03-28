@@ -15,6 +15,8 @@ public class RoomConfiguration
     public int ObastacleSeedPoints;
     public DoorPlacement DoorPlacement;
 
+
+
     public RoomConfiguration(RoomConfiguration config)
     {
         RoomType = config.RoomType;

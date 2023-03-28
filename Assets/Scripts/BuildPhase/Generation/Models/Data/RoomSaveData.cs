@@ -18,7 +18,6 @@ public class RoomSaveData
     public int RoomHeight;
 
     public string TileString;
-
     public string ObstacleString;
 
     public DoorPlacement Doors;
@@ -41,25 +40,32 @@ public class RoomSaveData
 
         foreach (Tile t in r.Tiles)
         {
-            if(t.Placement != DoorPlacement.none)
+            if (t.Placement != DoorPlacement.none)
                 rsd.TileString += $"[X:{(int)t.X},Y:{t.Y},T:{t.TileType},D:{t.Placement}];";
             else
                 rsd.TileString += $"[X:{(int)t.X},Y:{t.Y},T:{t.TileType}];";
 
         }
+
+        foreach (Obstacle o in r.Obstacles)
+        {
+            rsd.ObstacleString += $"[X:{(int)o.X},Y:{o.Y},T:{o.Type}];";
+        }
+
+
         return rsd;
     }
 
-    public static Room LoadRoom(RoomSaveData rsd)
+    public static Room LoadRoom(RoomSaveData rsd, bool generateObject = true)
     {
         Room r = new Room();
-            
-        r.Init((rsd.XIndex, rsd.YIndex), rsd.RoomWidth, rsd.RoomHeight);
+
+        r.Init((rsd.XIndex, rsd.YIndex), rsd.RoomWidth, rsd.RoomHeight, generateObject);
         r.Doors = rsd.Doors;
 
         List<string> tileString = rsd.TileString.Split(";").ToList();
 
-        foreach(string tile in tileString)
+        foreach (string tile in tileString)
         {
             if (string.IsNullOrEmpty(tile))
                 continue;
@@ -69,12 +75,12 @@ public class RoomSaveData
             DoorPlacement dp = DoorPlacement.none;
 
             List<string> pars = tile.Split(",").ToList();
-            foreach(string par in pars)
+            foreach (string par in pars)
             {
                 string partemp = par.Replace("[", "").Replace("]", "");
                 if (partemp.Contains("X:"))
                 {
-                    tileX = int.Parse(partemp.Replace("X:",""));
+                    tileX = int.Parse(partemp.Replace("X:", ""));
                 }
                 else if (partemp.Contains("Y:"))
                 {
@@ -84,22 +90,69 @@ public class RoomSaveData
                 {
                     dp = (DoorPlacement)Enum.Parse(typeof(DoorPlacement), partemp.Replace("D:", ""));
                 }
-                else if(partemp.Contains("T:"))
+                else if (partemp.Contains("T:"))
                 {
                     try
                     {
                         tt = (TileType)Enum.Parse(typeof(TileType), partemp.Replace("T:", ""));
-                    }catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
                         Debug.Log($"TileType string: {partemp}");
                     }
                 }
             }
-            r[tileX, tileY] = new Tile(tileX, tileY, tt, dp, r.RoomObject.transform);
-        }
-        return r;
 
+
+            r[tileX, tileY] = new Tile(tileX, tileY, tt, dp, generateObject ? r.RoomObject.transform : null);
+        }
+
+        foreach (string obstacle in rsd.ObstacleString.Split(";").ToList())
+        {
+            if (string.IsNullOrEmpty(obstacle))
+                continue;
+            int tileX = -1;
+            int tileY = -1;
+            ObstacleType ot = ObstacleType.grass;
+
+            List<string> pars = obstacle.Split(",").ToList();
+            foreach (string par in pars)
+            {
+                string partemp = par.Replace("[", "").Replace("]", "");
+                if (partemp.Contains("X:"))
+                {
+                    tileX = int.Parse(partemp.Replace("X:", ""));
+                }
+                else if (partemp.Contains("Y:"))
+                {
+                    tileY = int.Parse(partemp.Replace("Y:", ""));
+                }
+                else if (partemp.Contains("T:"))
+                {
+                    try
+                    {
+                        ot = (ObstacleType)Enum.Parse(typeof(ObstacleType), partemp.Replace("T:", ""));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log($"TileType string: {partemp}");
+                    }
+                }
+            }
+
+
+            if (r[tileX, tileY].TileObject != null)
+            {
+                GameObject obst = GameObject.Instantiate(Resources.Load<GameObject>($"Room/Obstacles/{ot}"));
+                obst.transform.parent = r[tileX, tileY].TileObject.transform;
+                obst.transform.localPosition = Vector2.zero;
+            }
+        }
+
+        return r;
     }
+
+
 
     public string ToJson()
     {

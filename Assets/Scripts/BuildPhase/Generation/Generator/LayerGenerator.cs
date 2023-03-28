@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.VFX;
 using Random = UnityEngine.Random;
@@ -33,8 +34,8 @@ public class LayerGenerator : IGenerator
     {
         CreateBaseTileMap(ref r, rC, parent);
         CreateDoors(ref r, rC, parent);
-        CreatePaths(ref r, parent);
-        CreateObstacles(ref r, rC, parent);
+        CreatePaths(ref r, rC, parent);
+        CreateObstacles(ref r, rC);
     }
 
 
@@ -53,9 +54,13 @@ public class LayerGenerator : IGenerator
     }
 
 
-    void CreatePaths(ref Room r, Transform parent = null)
+    void CreatePaths(ref Room r, RoomConfiguration rC, Transform parent = null)
     {
         
+
+
+
+
         int doorCount = (int)DoorPlacementHelper.GetFlagCount(r.Doors);
         if(doorCount == 1)
         {
@@ -64,30 +69,137 @@ public class LayerGenerator : IGenerator
 
         try
         {
-            Dictionary<DoorPlacement, bool> canBeReached = AddDoorsToDicitonary(ref r);
+            List<DoorPlacement> doors = AddDoorsToList(ref r);
 
-            while (canBeReached.Any(x => !x.Value))
+            if (doors.Count <= 1)
+                return;
+
+            DoorPlacement start = doors.ElementAt(Random.Range(0, doors.Count));
+            doors.Remove(start);
+            DoorPlacement end = doors.ElementAt(Random.Range(0, doors.Count));
+            doors.Remove(end);
+
+            List<Vector2Int> path = new List<Vector2Int>();
+
+            Vector2Int startPoint = DoorPosition(r, start);
+
+            if (BuildManager.Instance.Settings.Subpaths > 1)
             {
-                int notYetReached = canBeReached.Count(x => !x.Value);
+                int randomSubPathCount = Random.Range(2, BuildManager.Instance.Settings.Subpaths + 1);
 
-                KeyValuePair<DoorPlacement, bool> to = canBeReached.Where(x => !x.Value).ElementAt(Random.Range(0, notYetReached));
+                List<Vector2Int> points = new List<Vector2Int>();
+                int possbilePathCount = randomSubPathCount - 2;
 
-                KeyValuePair<DoorPlacement, bool> from = canBeReached.Where(x => x.Key != to.Key).ElementAt(Random.Range(0, canBeReached.Count - 1));
-
-                foreach (Vector2Int index in AStar.GeneratePath(r, DoorPosition(r, to.Key), DoorPosition(r, from.Key)))
+                for(int i = 0;i < randomSubPathCount; i++)
                 {
-                    r[index.x, index.y] = new Tile(index.x, index.y, TileType.path, DoorPlacement.none, parent);
+                    points.Add(new Vector2Int(Random.Range(1, r.BoundingBox.Width - 1), Random.Range(1, r.BoundingBox.Height - 1)));
                 }
 
-                canBeReached[to.Key] = true;
-                canBeReached[from.Key] = true;
+                foreach (Vector2Int point in points)
+                {
+                    path.AddRange(AStar.GeneratePath(r, startPoint, point));
+                    path.Add(point);
+                    startPoint = point;
+                }
             }
-        }catch(Exception ex)
+
+            path.AddRange(AStar.GeneratePath(r, startPoint, DoorPosition(r, end)));
+
+            foreach (Vector2Int index in path)
+            {
+                r[index.x, index.y] = new Tile(index.x, index.y, TileType.path, DoorPlacement.none, parent);
+            }
+
+
+            //List<Vector2Int> path = AStar.GeneratePath(r, DoorPosition(r, start), DoorPosition(r, end));
+
+
+            if (doors.Count > 0)
+            {
+                for(int i = doors.Count-1; i >= 0; i--)
+                {
+                    Vector2Int randomPathPoint = path.ElementAt(Random.Range(0, path.Count));
+
+                    
+
+                    foreach (Vector2Int index in AStar.GeneratePath(r, DoorPosition(r, doors[i]), randomPathPoint))
+                    {
+                        r[index.x, index.y] = new Tile(index.x, index.y, TileType.path, DoorPlacement.none, parent);
+                    }
+
+                    doors.RemoveAt(i);
+                }
+            }
+
+
+
+
+
+
+            //while (!AllCanBeReached(connectionMatrix))
+            //{
+            //    int notYetReached = canBeReached.Count(x => !x.Value);
+
+            //    KeyValuePair<DoorPlacement, List<DoorPlacement>> to = connectionMatrix.Where(x => x.Value.Count == 0).ElementAt(Random.Range(0, notYetReached));
+
+            //    KeyValuePair<DoorPlacement, List<DoorPlacement>> from = connectionMatrix.Where(x => x.Key != to.Key).ElementAt(Random.Range(0, connectionMatrix.Count - 1));
+
+            //    foreach (Vector2Int index in AStar.GeneratePath(r, DoorPosition(r, to.Key), DoorPosition(r, from.Key)))
+            //    {
+            //        r[index.x, index.y] = new Tile(index.x, index.y, TileType.path, DoorPlacement.none, parent);
+            //    }
+
+            //    connectionMatrix[to.Key].Add(from.Key);
+            //    connectionMatrix[from.Key].Add(to.Key);
+            //}
+        }
+        catch (Exception ex)
         {
             Debug.Log("Door count: " + doorCount);
         }
 
     }
+
+
+    bool AllCanBeReached(Dictionary<DoorPlacement, List<DoorPlacement>> matrix)
+    {
+        if (matrix.Any(x => x.Key != DoorPlacement.none && x.Value.Count == 0))
+            return false;
+
+        bool allReached = true;
+        foreach(KeyValuePair<DoorPlacement, List<DoorPlacement>> door in matrix)
+        {
+            foreach(KeyValuePair<DoorPlacement, List<DoorPlacement>> otherdoor in matrix.Where(x => x.Key != door.Key))
+            {
+                if (otherdoor.Value.Count == 0)
+                    return false;
+
+                allReached &= CanReachDoor(matrix, otherdoor, door.Key);
+                
+            }
+
+           // allReached &= matrix.Any(x => x.Value == door.Key);
+        }
+
+        return true;
+    }
+
+    bool CanReachDoor(Dictionary<DoorPlacement, List<DoorPlacement>> matrix, KeyValuePair<DoorPlacement, List<DoorPlacement>> otherDoor, DoorPlacement root)
+    {
+        bool canBeReached = matrix[root].Contains(otherDoor.Key);
+
+        if (canBeReached)
+            return true;
+
+        foreach(DoorPlacement connectedTo in otherDoor.Value)
+        {
+            if(connectedTo == root) return true;
+
+            canBeReached |= CanReachDoor(matrix, matrix.Where(x => x.Key == connectedTo).FirstOrDefault(), root);
+        }
+        return canBeReached;
+    }
+
 
     Vector2Int DoorPosition(Room r, DoorPlacement placement)
     {
@@ -113,82 +225,127 @@ public class LayerGenerator : IGenerator
         }
     }
 
-
-
-    Dictionary<DoorPlacement, bool> AddDoorsToDicitonary(ref Room r)
+    Dictionary<DoorPlacement, List<DoorPlacement>> CreateConnectionMatrix(ref Room r)
     {
         if ((int)DoorPlacementHelper.GetFlagCount(r.Doors) == 0)
         {
-            return new Dictionary<DoorPlacement, bool>();
+            return new Dictionary<DoorPlacement, List<DoorPlacement>>();
         }
 
-        Dictionary<DoorPlacement, bool> canBeReached = new();
+        Dictionary<DoorPlacement, List<DoorPlacement>> canBeReached = new();
 
         if (r.Doors.HasFlag(DoorPlacement.north))
         {
-            canBeReached.Add(DoorPlacement.north, false);
+            canBeReached.Add(DoorPlacement.north, new List<DoorPlacement>());
         }
 
         if (r.Doors.HasFlag(DoorPlacement.east))
         {
-            canBeReached.Add(DoorPlacement.east, false);
+            canBeReached.Add(DoorPlacement.east, new List<DoorPlacement>());
         }
         if (r.Doors.HasFlag(DoorPlacement.south))
         {
-            canBeReached.Add(DoorPlacement.south, false);
+            canBeReached.Add(DoorPlacement.south, new List<DoorPlacement>());
         }
         if (r.Doors.HasFlag(DoorPlacement.west))
         {
-            canBeReached.Add(DoorPlacement.west, false);
+            canBeReached.Add(DoorPlacement.west, new List<DoorPlacement>());
         }
 
         return canBeReached;
     }
 
 
-    private void CreateObstacles(ref Room r, RoomConfiguration rC, Transform parent = null)
-    {       
-        Stack<Vector3> spawnPoints = new Stack<Vector3>();
-        List<Vector3> closed = new List<Vector3>();
-        for(int i = 0; i < rC.ObastacleSeedPoints; i++)
+
+        List<DoorPlacement> AddDoorsToList(ref Room r)
+    {
+        if ((int)DoorPlacementHelper.GetFlagCount(r.Doors) == 0)
         {
-            Vector3 seedPoint = r.BoundingBox.GetPoint();
-            if (!spawnPoints.Contains(seedPoint))
-                spawnPoints.Push(seedPoint);
+            return new List<DoorPlacement>();
         }
 
+        List<DoorPlacement> canBeReached = new();
 
-        float prob = rC.ObstaclePropability;
-
-        while (spawnPoints.Count > 0)
+        if (r.Doors.HasFlag(DoorPlacement.north))
         {
-            Vector3 spawnPoint = spawnPoints.Pop();
-
-            closed.Add(spawnPoint);
-            for(int i = 0; i < IterationMasks.EightX.Length; i++)
-            {
-                Vector3 newPoint = new Vector3(spawnPoint.x + IterationMasks.EightX[i], spawnPoint.y + IterationMasks.EightY[i], 0);
-                if (!spawnPoints.Contains(newPoint) && !closed.Contains(newPoint) && r.BoundingBox.IsPointValid(newPoint) && UnityEngine.Random.Range(0f, 1f) < prob)
-                {
-                    prob -= 0.01f;
-                    spawnPoints.Push(newPoint);
-                }
-            }
-
-
-            if (r[(int)spawnPoint.x, (int)spawnPoint.y].TileType == TileType.edge || UnityEngine.Random.Range(0f, 1f) < 0.7f)
-                continue;
-
-
-
-            GameObject obstacle = GameObject.Instantiate(Resources.Load<GameObject>("Room/Test_Obstacle"));
-            obstacle.transform.parent = r[(int)spawnPoint.x, (int)spawnPoint.y].TileObject.transform;
-            obstacle.transform.localPosition = new Vector3(0, 0, 0);
-            obstacle.GetComponent<SpriteRenderer>().sortingOrder = 1;
-
+            canBeReached.Add(DoorPlacement.north);
         }
+
+        if (r.Doors.HasFlag(DoorPlacement.east))
+        {
+            canBeReached.Add(DoorPlacement.east);
+        }
+        if (r.Doors.HasFlag(DoorPlacement.south))
+        {
+            canBeReached.Add(DoorPlacement.south);
+        }
+        if (r.Doors.HasFlag(DoorPlacement.west))
+        {
+            canBeReached.Add(DoorPlacement.west);
+        }
+
+        return canBeReached;
     }
 
+
+    private void CreateObstacles(ref Room r, RoomConfiguration rC)
+    {
+        int x = r.BoundingBox.Width - 1;
+        int y = r.BoundingBox.Height - 1;
+
+        for(int rand = 0; rand < Mathf.FloorToInt(r.Tiles.Count * 0.65f); rand++)
+        {
+
+            (int i, int j) = GetRandomObstaclePoint(r, x, y);
+
+            int obstaclesAdjacend = 0;
+            for (int t = 0; t < IterationMasks.EightX.Length; t++)
+            {
+                if (r.Obstacles.Any(x => x.X == i + IterationMasks.EightX[t] && x.Y == j + IterationMasks.EightY[t]))
+                    obstaclesAdjacend++;
+            }
+
+            if (obstaclesAdjacend <= 4)
+            {
+                int maxValue = Enum.GetValues(typeof(ObstacleType))
+               .Cast<int>()
+               .Max();
+
+                int randomIndex = UnityEngine.Random.Range(0, maxValue + 1);
+                while (r[i, j].TileType == TileType.path && (randomIndex % 2 != 0))
+                {
+                    randomIndex = UnityEngine.Random.Range(0, maxValue + 1);
+                }
+
+                Obstacle obst = new Obstacle() { X = i, Y = j, Type = (ObstacleType)randomIndex };
+                r.Obstacles.Add(obst);
+
+                if (r[i, j].TileObject != null)
+                {
+                    GameObject inst = GameObject.Instantiate(Resources.Load<GameObject>($"Room/Obstacles/{obst.Type}"));
+                    inst.transform.parent = r[i, j].TileObject.transform;
+                    inst.transform.localPosition = Vector3.zero;
+                }
+            }
+        }
+
+    }
+
+    private (int x, int y) GetRandomObstaclePoint(Room r, int maxX, int maxY)
+    {
+        
+        int i = UnityEngine.Random.Range(1, maxX);
+        int j = UnityEngine.Random.Range(1, maxY);
+
+        while(r.Obstacles.Any(x => x.X == i && x.Y == j))
+        {
+            i = UnityEngine.Random.Range(1, maxX);
+            j = UnityEngine.Random.Range(1, maxY);
+        }
+
+        return (i, j);
+
+    }
 
 
     void CreateDoors(ref Room r, RoomConfiguration rC, Transform parent = null)

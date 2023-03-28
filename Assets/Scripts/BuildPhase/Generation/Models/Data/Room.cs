@@ -66,12 +66,14 @@ public class Room : BaseRoom
 {
     public Guid Id { get; private set; }
     private List<Tile> _tiles;
+    private List<Obstacle> _obstacles = new List<Obstacle>();
     public DoorPlacement Doors = DoorPlacement.none;
 
 
     public BoundingBox BoundingBox { get; private set; }
 
     public List<Tile> Tiles { get { return _tiles; } }
+    public List<Obstacle> Obstacles { get { return _obstacles; } }
 
 
     public Tile this[int x, int y]

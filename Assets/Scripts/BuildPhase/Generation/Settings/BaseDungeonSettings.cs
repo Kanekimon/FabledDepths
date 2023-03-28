@@ -10,6 +10,6 @@ public class BaseDungeonSettings
 {
     public int RoomWidth;
     public int RoomHeight;
-
+    public int Subpaths = 2;
 
 }

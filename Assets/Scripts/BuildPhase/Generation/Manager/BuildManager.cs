@@ -64,6 +64,14 @@ public class BuildManager : Singleton<BuildManager>
     /// <param name="stage"></param>
     public void InitBuildingPhase(int stage)
     {
+        if(DungeonContainer.transform.childCount > 0)
+        {
+            DestroyImmediate(DungeonContainer);
+            DungeonContainer = new GameObject();
+            DungeonContainer.tag = "dungeoncontainer";
+            DungeonContainer.name = "DungeonContainer";
+        }
+
         if(stage == 0)
             RegisterRoom((0, 0));
         else
@@ -253,7 +261,7 @@ public class BuildManager : Singleton<BuildManager>
 
         Vector3 plhPos = plh.RoomObject.transform.position;
         r.RoomObject.transform.position = new Vector3((Settings.RoomWidth * plh.Index.X) - (Settings.RoomWidth / 2), (Settings.RoomHeight * plh.Index.Y) - (Settings.RoomHeight / 2), 0);  //CurrentlyOver.transform.position - new Vector3(BuildManager.Instance.Settings.RoomWidth / 2, BuildManager.Instance.Settings.RoomHeight / 2, 0);
-
+        r.RoomObject.transform.parent = DungeonContainer.transform;
         RoomMap[plh.Index] = r;
         DestroyImmediate(plh.RoomObject);
         RegeneratePlaceholder();
