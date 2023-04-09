@@ -20,6 +20,9 @@ public class ClickHandler : MonoBehaviour
     private int x;
     private int y;
 
+    public int X { get => x; private set { x = value; } }
+    public int Y { get => y; private set { y = value; } }
+
 
     private void Start()
     {
@@ -45,11 +48,24 @@ public class ClickHandler : MonoBehaviour
     //    RoomEditorBuildManager.Instance.IsDragging = false;
     //}
 
+    public void Highlight()
+    {
+        sRenderer.material.color = Color.green;
+    }
+
+    public void ResetColor()
+    {
+        this.GetComponent<Renderer>().material.color = c;
+    }
 
 
     private void OnMouseOver()
     {
-        sRenderer.material.color = Color.green;
+        if(RoomEditorBuildManager.Instance.CurrentlyOver != this)
+        {
+            RoomEditorBuildManager.Instance.PreviewBrush(this);
+        }
+
 
         if (Input.GetMouseButtonDown(0))
             PlaceTile();
@@ -73,7 +89,7 @@ public class ClickHandler : MonoBehaviour
 
     private void OnMouseExit()
     {
-        this.GetComponent<Renderer>().material.color = c;
+        RoomEditorBuildManager.Instance.ResetBrushPreview();
     }
 
     void PlaceTile(bool unset = false)

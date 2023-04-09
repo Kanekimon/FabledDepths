@@ -5,15 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+[Flags]
 public enum RoomType
 {
-    start,
-    monster,
-    treasure,
-    boss,
-    trap, 
-    puzzle,
-    shop
+    start = 1,
+    monster = 2,
+    treasure = 4,
+    boss = 8,
+    trap = 16, 
+    puzzle = 32,
+    shop = 64
 }
 
 

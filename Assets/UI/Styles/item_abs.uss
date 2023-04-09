@@ -48,3 +48,15 @@
     align-self: stretch;
     justify-content: space-evenly;
 }
+
+.tile_container {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 50%;
+    height: 10%;
+    max-height: none;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
