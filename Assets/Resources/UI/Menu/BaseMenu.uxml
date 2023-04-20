@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Base" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row;">
+        <ui:VisualElement name="Left" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: 30%;" />
+        <ui:VisualElement name="Middle" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: 40%;">
+            <ui:VisualElement name="Top" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 10%;" />
+            <ui:VisualElement name="Middle" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 80%;">
+                <ui:VisualElement name="Menu_Title" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 20%; justify-content: space-evenly; align-items: auto;">
+                    <ui:Label tabindex="-1" text="Fabled Depths" display-tooltip-when-elided="true" name="Menu_Title_Label" style="-unity-text-align: middle-center; flex-grow: 1; font-size: 50%; width: 100%; white-space: nowrap; text-overflow: ellipsis;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Menu_Button_Group" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 70%;">
+                    <ui:Button text="Start Game" display-tooltip-when-elided="true" name="Start_Game_Button" />
+                    <ui:Button text="Enter RoomEditor" display-tooltip-when-elided="true" name="RoomEditor_Button" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Menu_Footer" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 10%;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Bottom" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 10%;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Right" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: 30%;" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,6 +97,8 @@ namespace Assets.Scripts.Room_Editor.Manager
                     }
                 }
             }
+            VisualElement first = Active_Tab.Children().Where(x => x.name.Contains("[")).FirstOrDefault();
+            SetActiveTile(Tile_Items.First().Key, Tile_Items.Values.First());
         }
 
         public void AddTileItem(Placeable pl, VisualElement container)
@@ -106,12 +109,17 @@ namespace Assets.Scripts.Room_Editor.Manager
             slot.style.backgroundImage = pl.PlaceablePrefab.GetComponent<SpriteRenderer>().sprite.texture;
 
             slot.AddManipulator(new Clickable(() => {
-                VisualElement old = Tile_Items.Where(x => x.Value == ActiveTile).FirstOrDefault().Key;
-                RemoveBorder(old);
-                ActiveTile = pl;
-                AddBorder(slot);
+                SetActiveTile(slot, pl);
                 }));
 
+        }
+
+        void SetActiveTile(VisualElement slot, Placeable pl)
+        {
+            VisualElement old = Tile_Items.Where(x => x.Value == ActiveTile).FirstOrDefault().Key;
+            RemoveBorder(old);
+            ActiveTile = pl;
+            AddBorder(slot);
         }
 
         void RemoveBorder(VisualElement o)
