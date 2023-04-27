@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,14 +63,16 @@ public class DungeonSaveManager : Singleton<DungeonSaveManager>
             rooms.Add(RoomSaveData.SaveRoom((Room)room.Value));
         }
 
-        using (StreamWriter streamWriter = new StreamWriter(@"D:\Unity Workspace\FabledDepths\TempJson\room.json"))
+        string json =  JsonConvert.SerializeObject(rooms, Formatting.Indented, new JsonSerializerSettings()
         {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
 
-            streamWriter.Write(JsonConvert.SerializeObject(rooms, Formatting.Indented, new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            }));
-        }
+        //TODO: getCurrentPlayer ID
+        int id = 1;
+
+        DatabaseManager.Instance.SaveDungeon(id, json);
+
     }
 
 

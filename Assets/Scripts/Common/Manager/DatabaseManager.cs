@@ -5,6 +5,7 @@ using System.IO;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System;
+using Newtonsoft.Json.Bson;
 
 public class DatabaseManager : Singleton<DatabaseManager>
 {
@@ -113,6 +114,69 @@ public class DatabaseManager : Singleton<DatabaseManager>
             return false;
         }
     }
+
+    public bool SaveDungeon(int userId, string json)
+    {
+        try
+        {
+            IDbConnection dbConnect = CreateConnection();
+
+            IDbCommand cmnd = dbConnect.CreateCommand();
+            cmnd.CommandText = $"INSERT INTO fb_dungeons (player_id, dungeon_data) VALUES (\"{userId}\",\'{json}\')";
+            cmnd.ExecuteNonQuery();
+            dbConnect.Close();
+            return true;
+        }
+        catch(Exception ex)
+        {
+            Debug.LogError(ex.Message);
+            return false;
+        }
+    }
+
+    public string GetDungeonJson(int userId)
+    {
+        try
+        {
+            IDbConnection con = CreateConnection();
+            IDbCommand cmnd = con.CreateCommand();
+            cmnd.CommandText = $"SELECT dungeon_data FROM fb_dungeons WHERE player_id = \"{userId}\"";
+            IDataReader reader = cmnd.ExecuteReader();
+
+            string dungeon = "";
+            while (reader.Read())
+            {
+                byte[] json = (byte[])reader["dungeon_data"];
+                dungeon = System.Text.Encoding.Default.GetString(json);
+            }
+
+
+            return dungeon;
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex);
+            return "";
+        }
+    }
+
+
+
+    public IDbConnection CreateConnection()
+    {
+        try
+        {
+            string connection = "URI=file:" + Application.persistentDataPath + "/FabledDephts.db";
+            IDbConnection dbcon = new SqliteConnection(connection);
+            dbcon.Open();
+            return dbcon;
+        }
+        catch(Exception ex)
+        {
+            return null;
+        }
+    }
+
 
 
 }

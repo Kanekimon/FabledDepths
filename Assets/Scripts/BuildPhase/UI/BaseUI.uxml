@@ -19,7 +19,9 @@
                 <ui:Button text="Open" display-tooltip-when-elided="true" name="Expand_Card_View" style="width: 30%; bottom: auto; height: 10%; padding-bottom: 10px; margin-bottom: 10px;" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="VE_Right_Base" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 100%; width: 10%;" />
+        <ui:VisualElement name="VE_Right_Base" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 100%; width: 10%;">
+            <ui:Button text="Save" display-tooltip-when-elided="true" name="Button_Save" />
+        </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="VE_Absolute" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); position: absolute; width: 100%; height: 100%; align-items: auto; top: -3px; left: 4px;" />
+    <ui:VisualElement name="VE_Absolute" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); position: absolute; width: 100%; height: 100%; align-items: auto; top: -11px; left: 41px;" />
 </ui:UXML>

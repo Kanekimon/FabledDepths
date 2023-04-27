@@ -15,6 +15,7 @@ public class UiManager : Singleton<UiManager>
     public VisualElement root;
     public Button BuildToggle;
     public Button FoldOut_CardView;
+    public Button SaveButton;
     public VisualElement CardContainer;
     public VisualElement AbsoluteContainer;
     public VisualElement Card_View;
@@ -38,7 +39,8 @@ public class UiManager : Singleton<UiManager>
         Card_View = root.Q<VisualElement>("Card_View");
         FoldOut_CardView = root.Q<Button>("Expand_Card_View");
         FoldOut_CardView.clicked += ToggleFold;
-
+        SaveButton = root.Q<Button>("Button_Save");
+        SaveButton.clicked += SaveDungeon;
         InitCardSlots();
     }
 
@@ -48,6 +50,11 @@ public class UiManager : Singleton<UiManager>
         {
             _card_slots.Add(cardslot);
         }
+    }
+
+    void SaveDungeon()
+    {
+        DungeonSaveManager.Instance.SaveRooms(BuildManager.Instance.RoomMap);
     }
 
 
